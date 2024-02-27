@@ -1,7 +1,4 @@
-
-
 ![gopher](https://github.com/cagrigit-hub/golosus/assets/77447064/1031c33e-aa11-4f80-92e9-d7e9ff9285bc)
-
 
 # Golosus
 
@@ -31,18 +28,24 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
    golosus -name="YOUR PROJECT NAME" -github="YOUR GITHUB NICKNAME"
    ```
 
-3. Install dependencies by make
+3. Get in the directory
+   ```bash
+   cd <your-project-name>
+   ```
+4. Install dependencies by make
 
    ```bash
    make init
    ```
 
-4. or Install dependencies by hand
+   or Install dependencies by hand
+
    ```bash
    templ generate
    go mod tidy
    npm install --prefix ./typescript
    ```
+
 5. Start using by
    ```bash
    make run
