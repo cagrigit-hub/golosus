@@ -38,7 +38,30 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
    go mod tidy
    npm install --prefix ./typescript
    ```
-5. Start using! Check localhost:3000/example!
+5. Start using by
+   ```bash
+   make run
+   ```
+   or
+   ```bash
+   templ generate
+   go run cmd/
+   ```
+6. Check localhost:3000/example !
+
+7. To build your project you can use
+
+   ```bash
+   make build
+   ```
+
+   or
+
+   ```bash
+   templ generate
+   npm run build --prefix ./typescript
+   go build -o ./bin ./cmd
+   ```
 
 ## Future Changes
 
