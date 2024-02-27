@@ -15,11 +15,7 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
 
 ## Usage (it is up to date but will be changed)
 
-1. Install Golosus using `go get`:
-
-   ```bash
-   go get github.com/cagrigit-hub/golosus
-   ```
+1. Install latest Golosus from releases and add it to your bin. (this step will be changed - go get / install will be available)
 
 2. Run Golosus to create your project template:
 
