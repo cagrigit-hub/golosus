@@ -15,6 +15,9 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
 
 ## Usage (it is up to date but will be changed)
 
+0. You need to have go & node & templ cli installed on your computer.
+   I assumed you already have go & node to get templ -> [Check](https://github.com/a-h/templ)
+
 1. Install latest Golosus from releases and add it to your bin. (this step will be changed - go get / install will be available)
 
 2. Run Golosus to create your project template:
