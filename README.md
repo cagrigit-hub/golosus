@@ -41,6 +41,14 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
    ```
 5. Start using!
 
+## Future Changes
+
+Exciting updates are planned for Golosus! In the future, we are gearing up to introduce React support as the frontend alongside HTMX. Here's what you can expect:
+
+- **React Integration:** Golosus will support React for the frontend, working seamlessly with HTMX. React will emit events, and HTMX will catch and reflect these changes, offering a powerful combination for dynamic and interactive web applications.
+
+Stay tuned for upcoming releases that will bring these enhancements to Golosus, making it even more versatile and adaptable to your web development needs!
+
 ## Contributions
 
 Contributions and feedback are welcome! Feel free to:
