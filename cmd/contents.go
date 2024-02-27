@@ -159,6 +159,7 @@ init:
 	@npm install --prefix ./typescript
 run: 
 	@templ generate
+	@npm run build --prefix ./typescript
 	@go run ./cmd $(ARGS)
 build:
 	@templ generate

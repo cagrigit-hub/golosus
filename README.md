@@ -45,6 +45,7 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
    or
    ```bash
    templ generate
+   npm run build --prefix ./typescript
    go run cmd/
    ```
 6. Check localhost:3000/example !
