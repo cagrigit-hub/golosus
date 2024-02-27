@@ -14,9 +14,15 @@ import (
 
 func main() {
 	app := echo.New()
-	app.Static("/static", "assets")
+  app.Static("/static", "assets")
+	app.GET("/", func(c echo.Context) error {
+		return c.String(200, "Hello, World!")
+	})
+  app.GET("/example", exampleHandler.HandleExampleShow)
+	app.POST("/example", exampleHandler.HandlePost)
 	app.Start(":3000")
 }
+
 
 `
 }
@@ -34,7 +40,7 @@ templ Base() {
 		<body>
 			This is from the base layout
 			{ children... }
-			<script type="module" src="/static/jscode/index.js"></script>
+			<script type="module" src="/static/jscode/bundle.js"></script>
 		</body>
 	</html>
 }
@@ -79,11 +85,22 @@ import (
 
 type ExampleHandler struct{}
 
-func (h ExampleHandler) HandleExampleShow(c echo.Context) error {
+func (h *ExampleHandler) HandleExampleShow(c echo.Context) error {
 	u := model.Example{
 		Text: "example-text",
 	}
 	return render(c, example.Show(u))
+}
+
+func (h *ExampleHandler) HandlePost(c echo.Context) error {
+	c.Request().ParseForm()
+	if c.Request().Form.Has("example") {
+		u := model.Example{
+			Text: c.Request().Form.Get("example"),
+		}
+		return render(c, example.EcOne(u))
+	}
+	return c.String(400, "Bad Request")
 }
 
 	`, github, name, github, name)
@@ -101,10 +118,20 @@ import (
 
 templ Show(example model.Example) {
 	@layout.Base() {
-		<h1>hello { example.Text } from the user </h1>
-		@components.Input(components.InputProps{Type: "email", Name: "email"})
+		<div>
+			@EcOne(example)
+			<form hx-post="/example" hx-target="#example" hx-swap="outerHTML">
+				@components.Input(components.InputProps{Type: "text", Name: "example"})
+				<button>Submit</button>
+			</form>
+		</div>
 	}
 }
+
+templ EcOne(example model.Example) {
+	<h1 id="example">hello { example.Text } from the user </h1>
+}
+
 `, github, name, github, name, github, name)
 }
 
@@ -125,9 +152,17 @@ templ Input(props InputProps) {
 
 func (c *Content) Make() string {
 	return `
-run:
-	@templ generate 
-	@go run cmd/main.go
+init:
+	@templ generate
+	@go mod tidy
+	@npm install --prefix ./typescript
+run: 
+	@templ generate
+	@go run ./cmd $(ARGS)
+build:
+	@templ generate
+	@npm run build --prefix ./typescript
+	@go build -o ./bin ./cmd
 `
 }
 
@@ -156,7 +191,7 @@ require (
 
 func (c *Content) TypescriptIndex() string {
 	return `
-var x: int = 1;
+var x: number = 1;
 console.log(x);
 `
 }
@@ -200,7 +235,7 @@ func (c *Content) TsConfig() string {
     // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
 
     /* Language and Environment */
-    "target": "es2016",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "target": "ES6",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     // "lib": [],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
     // "jsx": "preserve",                                /* Specify what JSX code is generated. */
     // "experimentalDecorators": true,                   /* Enable experimental support for legacy experimental decorators. */
@@ -244,7 +279,7 @@ func (c *Content) TsConfig() string {
     // "sourceMap": true,                                /* Create source map files for emitted JavaScript files. */
     // "inlineSourceMap": true,                          /* Include sourcemap files inside the emitted JavaScript. */
     // "outFile": "./",                                  /* Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. */
-    "outDir": "./assets/jscode",                                   /* Specify an output folder for all emitted files. */
+    "outDir": "../assets/jscode",                                   /* Specify an output folder for all emitted files. */
     // "removeComments": true,                           /* Disable emitting comments. */
     // "noEmit": true,                                   /* Disable emitting files from a compilation. */
     // "importHelpers": true,                            /* Allow importing helper functions from tslib once per project, instead of including them per-file. */

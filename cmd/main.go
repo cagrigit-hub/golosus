@@ -1,9 +1,6 @@
 package main
 
-// TODO: ts build wrong
-// TODO: index.ts wrong
 // TODO: search for go mod tidy problem.
-// TODO: update makefile
 
 import (
 	"flag"
@@ -39,7 +36,7 @@ func main() {
 		"model",
 		"handler",
 		"view/components",
-		"view/layouts",
+		"view/layout",
 		"view/example",
 		"typescript",
 		".",
@@ -57,7 +54,7 @@ func main() {
 		"cmd": {
 			{"main.go", ct.Main()},
 		},
-		"view/layouts": {
+		"view/layout": {
 			{"base.templ", ct.Layout(name)},
 		},
 		"view/example": {
