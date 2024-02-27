@@ -39,7 +39,7 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
    go mod tidy
    npm install --prefix ./typescript
    ```
-5. Start using!
+5. Start using! Check localhost:3000/example!
 
 ## Future Changes
 

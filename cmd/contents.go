@@ -4,27 +4,31 @@ import "fmt"
 
 type Content struct{}
 
-func (c *Content) Main() string {
-	return `
+func (c *Content) Main(name, github string) string {
+	return fmt.Sprintf(`
 package main
 
 import (
+	"github.com/%s/%s/handler"
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
 	app := echo.New()
-  app.Static("/static", "assets")
+	exampleHandler := &handler.ExampleHandler{}
+	app.Static("/static", "assets")
 	app.GET("/", func(c echo.Context) error {
 		return c.String(200, "Hello, World!")
 	})
-  app.GET("/example", exampleHandler.HandleExampleShow)
+	app.GET("/example", exampleHandler.HandleExampleShow)
 	app.POST("/example", exampleHandler.HandlePost)
 	app.Start(":3000")
 }
 
+}
 
-`
+
+`, github, name)
 }
 
 func (c *Content) Layout(title string) string {

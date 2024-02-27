@@ -52,7 +52,7 @@ func main() {
 
 	files := map[string][]file{
 		"cmd": {
-			{"main.go", ct.Main()},
+			{"main.go", ct.Main(name, githubProfile)},
 		},
 		"view/layout": {
 			{"base.templ", ct.Layout(name)},
