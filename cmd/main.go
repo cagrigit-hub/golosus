@@ -1,7 +1,5 @@
 package main
 
-// TODO: search for go mod tidy problem.
-
 import (
 	"flag"
 	"fmt"
