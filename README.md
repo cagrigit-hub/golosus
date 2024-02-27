@@ -1,3 +1,8 @@
+
+
+![gopher](https://github.com/cagrigit-hub/golosus/assets/77447064/1031c33e-aa11-4f80-92e9-d7e9ff9285bc)
+
+
 # Golosus
 
 Golosus is a powerful Go package designed to streamline the creation of folder templates for web development projects. This package simplifies the setup process by generating a structured template with essential files for a modern web application. Golosus includes support for:
