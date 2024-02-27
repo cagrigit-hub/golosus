@@ -13,7 +13,7 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
 - 🚀 **Fast Setup:** Save time and effort by using Golosus to kickstart your development environment.
 - 🧰 **Customization:** Tailor the template to your specific project requirements using Go templating.
 
-## Usage
+## Usage (it is up to date but will be changed)
 
 1. Install Golosus using `go get`:
 
@@ -24,19 +24,22 @@ Golosus is a powerful Go package designed to streamline the creation of folder t
 2. Run Golosus to create your project template:
 
    ```bash
-   golosus create mywebapp
+   golosus -name="YOUR PROJECT NAME" -github="YOUR GITHUB NICKNAME"
    ```
 
-3. Start building your web application with a structured foundation!
+3. Install dependencies by make
 
-   ```go
-   package main
-   import "github.com/yourusername/mywebapp"
-
-   func main() {
-       mywebapp.StartServer()
-   }
+   ```bash
+   make init
    ```
+
+4. or Install dependencies by hand
+   ```bash
+   templ generate
+   go mod tidy
+   npm install --prefix ./typescript
+   ```
+5. Start using!
 
 ## Contributions
 
