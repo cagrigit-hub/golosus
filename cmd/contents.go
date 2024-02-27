@@ -25,9 +25,6 @@ func main() {
 	app.Start(":3000")
 }
 
-}
-
-
 `, github, name)
 }
 
