@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 )
 
 type file struct {
@@ -21,8 +20,8 @@ func main() {
 	flag.StringVar(&githubProfile, "github", "cagrigit-hub", "github user name")
 	flag.Parse()
 
-	command := goModInit(name, githubProfile)
-	exec.Command("sh", "-c", command).Run()
+	// command := goModInit(name, githubProfile)
+	// exec.Command("sh", "-c", command).Run()
 
 	ct := &Content{}
 
