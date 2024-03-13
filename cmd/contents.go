@@ -41,7 +41,7 @@ templ Base() {
 		<body>
 			This is from the base layout
 			{ children... }
-			<script type="module" src="/static/jscode/bundle.js"></script>
+			<script type="module" src="/static/bundled/bundle.js"></script>
 		</body>
 	</html>
 }
@@ -160,6 +160,7 @@ init:
 run: 
 	@templ generate
 	@npm run build --prefix ./typescript
+  @npm run bundle --prefix ./typescript
 	@go run ./cmd $(ARGS)
 build:
 	@templ generate
@@ -208,7 +209,8 @@ func (c *Content) PackageJson(name string) string {
   "scripts": {
     "dev" : "nodemon ./src/index.ts",
     "build" : "rm -rf ./build && npx tsc",
-    "start": "node ./build/index.js"
+    "start": "node ./build/index.js",
+    "bundle": "browserify ../assets/jscode/index.js -o ../assets/bundled/bundle.js"
   },
   "keywords": [],
   "author": "",
@@ -216,6 +218,9 @@ func (c *Content) PackageJson(name string) string {
   "devDependencies": {
     "@types/node": "^20.5.6",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "browserify": "^17.0.0"
   }
 }
 
