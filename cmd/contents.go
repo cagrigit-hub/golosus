@@ -160,7 +160,7 @@ init:
 run: 
 	@templ generate
 	@npm run build --prefix ./typescript
-  @npm run bundle --prefix ./typescript
+	@npm run bundle --prefix ./typescript
 	@go run ./cmd $(ARGS)
 build:
 	@templ generate
