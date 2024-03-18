@@ -28,6 +28,7 @@ func main() {
 	folders := []string{
 		"assets",
 		"assets/jscode",
+		"assets/bundled",
 		"cmd",
 		"view",
 		"model",
@@ -70,10 +71,12 @@ func main() {
 		".": {
 			{"go.mod", ct.GoMod(githubProfile, name)},
 			{"Makefile", ct.Make()},
+			{".air.toml", ct.Air()},
 		},
 		"typescript": {
 			{"tsconfig.json", ct.TsConfig()},
 			{"index.ts", ct.TypescriptIndex()},
+			{"scripts.ts", ct.ScriptsTs()},
 			{"package.json", ct.PackageJson(name)},
 		},
 	}

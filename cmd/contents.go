@@ -37,6 +37,8 @@ templ Base() {
 		<head>
 			<title>Hello! %s</title>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
 		</head>
 		<body>
 			This is from the base layout
@@ -45,6 +47,8 @@ templ Base() {
 		</body>
 	</html>
 }
+
+
 `, title)
 	return layout
 }
@@ -125,6 +129,15 @@ templ Show(example model.Example) {
 				@components.Input(components.InputProps{Type: "text", Name: "example"})
 				<button>Submit</button>
 			</form>
+			<div class="text-red-400">
+				Tailwind Configured
+			</div>
+			<div x-data="{ open: false }">
+				<button @click="open = true">Expand</button>
+				<span x-show="open">
+					Content...
+				</span>
+			</div>
 		</div>
 	}
 }
@@ -132,6 +145,7 @@ templ Show(example model.Example) {
 templ EcOne(example model.Example) {
 	<h1 id="example">hello { example.Text } from the user </h1>
 }
+
 
 `, github, name, github, name, github, name)
 }
@@ -153,6 +167,8 @@ templ Input(props InputProps) {
 
 func (c *Content) Make() string {
 	return `
+gen:
+	@templ generate
 init:
 	@templ generate
 	@go mod tidy
@@ -160,12 +176,11 @@ init:
 run: 
 	@templ generate
 	@npm run build --prefix ./typescript
-	@npm run bundle --prefix ./typescript
 	@go run ./cmd $(ARGS)
 build:
 	@templ generate
 	@npm run build --prefix ./typescript
-	@go build -o ./bin ./cmd
+	@go build -o ./tmp/bin ./cmd
 `
 }
 
@@ -194,9 +209,27 @@ require (
 
 func (c *Content) TypescriptIndex() string {
 	return `
-var x: number = 1;
+import scripts from "./scripts";
+
+// load scripts
+scripts.forEach((src) => {
+  let script = document.createElement("script");
+  script.setAttribute("src", src);
+  document.body.appendChild(script);
+});
+
+let x: number = 1;
 console.log(x);
+
 `
+}
+
+func (c *Content) ScriptsTs() string {
+	return `
+const scripts = [""];
+export default scripts;
+
+  `
 }
 
 func (c *Content) PackageJson(name string) string {
@@ -204,25 +237,27 @@ func (c *Content) PackageJson(name string) string {
 {
   "name": "%s",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/index.ts",
+  "description": "golosus-web-app, go check github.com/cagrigit-hub/golosus",
+  "main": "index.ts",
   "scripts": {
-    "dev" : "nodemon ./src/index.ts",
-    "build" : "rm -rf ./build && npx tsc",
-    "start": "node ./build/index.js",
-    "bundle": "browserify ../assets/jscode/index.js -o ../assets/bundled/bundle.js"
+    "build": "rm -rf ./ts-build && npx tsc && browserify --node --ignore-missing ./ts-build/index.js | terser > ../assets/bundled/bundle.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "golosus"
+  ],
+  "author": "@cagrigit-hub",
   "license": "ISC",
+  "type": "module",
   "devDependencies": {
     "@types/node": "^20.5.6",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "browserify": "^17.0.0"
+    "browserify": "^17.0.0",
+    "terser": "^5.29.2"
   }
 }
+
 
 `, name)
 }
@@ -242,7 +277,7 @@ func (c *Content) TsConfig() string {
     // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
 
     /* Language and Environment */
-    "target": "ES6",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "target": "ES6" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     // "lib": [],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
     // "jsx": "preserve",                                /* Specify what JSX code is generated. */
     // "experimentalDecorators": true,                   /* Enable experimental support for legacy experimental decorators. */
@@ -256,8 +291,8 @@ func (c *Content) TsConfig() string {
     // "moduleDetection": "auto",                        /* Control what method is used to detect module-format JS files. */
 
     /* Modules */
-    "module": "commonjs",                                /* Specify what module code is generated. */
-    "rootDir": "./",                                  /* Specify the root folder within your source files. */
+    "module": "commonjs" /* Specify what module code is generated. */,
+    "rootDir": "./" /* Specify the root folder within your source files. */,
     // "moduleResolution": "node10",                     /* Specify how TypeScript looks up a file from a given module specifier. */
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
@@ -286,7 +321,7 @@ func (c *Content) TsConfig() string {
     // "sourceMap": true,                                /* Create source map files for emitted JavaScript files. */
     // "inlineSourceMap": true,                          /* Include sourcemap files inside the emitted JavaScript. */
     // "outFile": "./",                                  /* Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. */
-    "outDir": "../assets/jscode",                                   /* Specify an output folder for all emitted files. */
+    "outDir": "./ts-build" /* Specify an output folder for all emitted files. */,
     // "removeComments": true,                           /* Disable emitting comments. */
     // "noEmit": true,                                   /* Disable emitting files from a compilation. */
     // "importHelpers": true,                            /* Allow importing helper functions from tslib once per project, instead of including them per-file. */
@@ -308,12 +343,12 @@ func (c *Content) TsConfig() string {
     // "isolatedModules": true,                          /* Ensure that each file can be safely transpiled without relying on other imports. */
     // "verbatimModuleSyntax": true,                     /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
     // "allowSyntheticDefaultImports": true,             /* Allow 'import x from y' when a module doesn't have a default export. */
-    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
     // "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
-    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
 
     /* Type Checking */
-    "strict": true,                                      /* Enable all strict type-checking options. */
+    "strict": true /* Enable all strict type-checking options. */,
     // "noImplicitAny": true,                            /* Enable error reporting for expressions and declarations with an implied 'any' type. */
     // "strictNullChecks": true,                         /* When type checking, take into account 'null' and 'undefined'. */
     // "strictFunctionTypes": true,                      /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */
@@ -335,9 +370,59 @@ func (c *Content) TsConfig() string {
 
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */
   }
 }
-
 	`
+}
+
+func (c *Content) Air() string {
+	return `
+  root = "."
+testdata_dir = "testdata"
+tmp_dir = "tmp"
+
+[build]
+  args_bin = []
+  bin = "./tmp/bin"
+  cmd = "make build"
+  delay = 1000
+  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  exclude_file = []
+  exclude_regex = ["_test.go", "_templ.go"]
+  exclude_unchanged = false
+  follow_symlink = false
+  full_bin = ""
+  include_dir = []
+  include_ext = ["go", "tpl", "tmpl", "html", "templ", "ts"]
+  include_file = []
+  kill_delay = "0s"
+  log = "build-errors.log"
+  poll = false
+  poll_interval = 0
+  post_cmd = []
+  pre_cmd = []
+  rerun = false
+  rerun_delay = 500
+  send_interrupt = false
+  stop_on_error = false
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  main_only = false
+  time = false
+
+[misc]
+  clean_on_exit = false
+
+[screen]
+  clear_on_rebuild = false
+  keep_scroll = true
+  `
 }
